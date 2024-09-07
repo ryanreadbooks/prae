@@ -1,4 +1,4 @@
-{{ if .ServiceTypeHasHttp }}
+{{- if .ServiceTypeHasHttp }}
 http:
   mode: dev
   log:

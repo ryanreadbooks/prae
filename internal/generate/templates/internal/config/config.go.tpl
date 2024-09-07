@@ -16,9 +16,7 @@ type Config struct {
   {{ if .ServiceTypeHasHttp }}
   Http rest.RestConf `json:"http"`
   {{ end }}
-
   {{ if .ServiceTypeHasGrpc }}
   Grpc zrpc.RpcServerConf `json:"grpc"`
   {{ end }}
-
 }

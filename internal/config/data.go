@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/ryanreadbooks/prae/internal/pkg"
 	"github.com/ryanreadbooks/prae/internal/pkg/log"
@@ -39,6 +40,17 @@ type Config struct {
 	ServiceType string `yaml:"type"`    // service type
 	Go          *Go    `yaml:"go"`      // go configuration
 	Style       string `yaml:"style"`   // which go framework to use
+
+	// internal use
+	outdir string `yaml:"-"`
+}
+
+func NewConfig() (*Config, error) {
+	wd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	return &Config{outdir: wd}, nil
 }
 
 // Check config validatity
@@ -100,7 +112,12 @@ func (c *Config) ServiceTypeHasGrpc() bool {
 	return c.ServiceTypeGrpc() || c.ServiceTypeBoth()
 }
 
+func (c *Config) OutDir() string {
+	return c.outdir
+}
+
 type Go struct {
-	Version string
-	Module  string
+	Version string `yaml:"version"`
+	Module  string `yaml:"module"`
+	Tidy    bool   `yaml:"tidy"`
 }

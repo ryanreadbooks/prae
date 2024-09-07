@@ -35,7 +35,11 @@ var genCmd = &cobra.Command{
 			return fmt.Errorf("read config file: %w", err)
 		}
 
-		var cfg config.Config
+		cfg, err := config.NewConfig()
+		if err != nil {
+			return fmt.Errorf("new config: %w", err)
+		}
+
 		err = yaml.Unmarshal(content, &cfg)
 		if err != nil {
 			return fmt.Errorf("parse config file: %w", err)
@@ -44,7 +48,7 @@ var genCmd = &cobra.Command{
 			return fmt.Errorf("config invalid: %w", err)
 		}
 
-		return generate.Handle(&cfg)
+		return generate.Handle(cfg)
 	},
 }
 

@@ -39,18 +39,18 @@ func CollectGoVersion() string {
 
 func GoModInit(module string) error {
 	cmd := exec.Command("go", "mod", "init", module)
-	// ignoreOutput(cmd)
+	ignoreOutput(cmd)
 	return cmd.Run()
 }
 
 func GoModEditGo(gv string) error {
 	cmd := exec.Command("go", "mod", "edit", fmt.Sprintf("-go=%s", gv))
-	// ignoreOutput(cmd)
+	ignoreOutput(cmd)
 	return cmd.Run()
 }
 
 func GoModTidy() error {
 	cmd := exec.Command("go", "mod", "tidy")
-	// ignoreOutput(cmd)
+	ignoreOutput(cmd)
 	return cmd.Run()
 }
