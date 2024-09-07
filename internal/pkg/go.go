@@ -10,10 +10,10 @@ import (
 
 var gore = regexp.MustCompile(`go(\d+\.\d+\.\d+)`)
 
-func ignoreOutput(cmd *exec.Cmd) {
-	var out bytes.Buffer
+func extractOutput(cmd *exec.Cmd){
+	var stdout bytes.Buffer
 	var stderr bytes.Buffer
-	cmd.Stdout = &out
+	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 }
 
@@ -39,18 +39,18 @@ func CollectGoVersion() string {
 
 func GoModInit(module string) error {
 	cmd := exec.Command("go", "mod", "init", module)
-	ignoreOutput(cmd)
+	extractOutput(cmd)
 	return cmd.Run()
 }
 
 func GoModEditGo(gv string) error {
 	cmd := exec.Command("go", "mod", "edit", fmt.Sprintf("-go=%s", gv))
-	ignoreOutput(cmd)
+	extractOutput(cmd)
 	return cmd.Run()
 }
 
 func GoModTidy() error {
 	cmd := exec.Command("go", "mod", "tidy")
-	ignoreOutput(cmd)
+	extractOutput(cmd)
 	return cmd.Run()
 }

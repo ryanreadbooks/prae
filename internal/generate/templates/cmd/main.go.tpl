@@ -5,17 +5,17 @@ import (
 
   "{{ .Go.Module }}/internal/config"
   "{{ .Go.Module }}/internal/svc"
-  {{- if .ServiceTypeHasHttp }}
+  {{- if .HasHttp }}
   "{{ .Go.Module }}/internal/http"
   {{ end -}}
 
-  {{- if .ServiceTypeHasGrpc -}}
+  {{- if .HasGrpc -}}
   {{ end }}
 
-  {{ if .ServiceTypeHasHttp -}}
+  {{ if .HasHttp -}}
   "github.com/zeromicro/go-zero/rest"
   {{ end -}}
-  {{ if .ServiceTypeHasGrpc -}}
+  {{ if .HasGrpc -}}
   "github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
   {{ end -}}
@@ -35,13 +35,13 @@ func main() {
   group := service.NewServiceGroup()
 	defer group.Stop()
 
-  {{ if .ServiceTypeHasHttp }}
+  {{ if .HasHttp }}
   restServer := rest.MustNewServer(c.Http)
   http.Register(restServer, ctx)
   group.Add(restServer)
   {{ end }}
 
-  {{ if .ServiceTypeHasGrpc }}
+  {{ if .HasGrpc }}
   grpcServer := zrpc.MustNewServer(c.Grpc, func(s *grpc.Server) {
 		
 	})

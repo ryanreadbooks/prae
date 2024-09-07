@@ -24,7 +24,6 @@ func Handle(name string) error {
 	var data = Config{
 		Version:     ver.Major(),
 		AppName:     name,
-		ServiceType: ServiceTypeHttp,
 		Go: &Go{
 			Version: pkg.CollectGoVersion(),
 			Module:  name,

@@ -13,7 +13,7 @@ import (
 )
 
 //go:embed templates
-var fs embed.FS
+var templates embed.FS
 
 func genFile() error {
 
@@ -119,7 +119,7 @@ func initProject(cfg *config.Config) error {
 	log.Info("init project in %s\n", cfg.AppName)
 
 	// go mod init
-	err := pkg.RenderTemplate("templates/go.mod", outpath(cfg.OutDir(), "go.mod"), fs, cfg)
+	err := pkg.RenderTemplate("templates/go.mod", outpath(cfg.OutDir(), "go.mod"), templates, cfg)
 	if err != nil {
 		return fmt.Errorf("go mod init: %w", err)
 	}
@@ -129,7 +129,7 @@ func initProject(cfg *config.Config) error {
 
 func renderCmd(cfg *config.Config) error {
 	err := pkg.RenderTemplate("templates/cmd/main.go", outpath(cfg.OutDir(), "cmd", "main.go"),
-		fs,
+		templates,
 		cfg)
 	if err != nil {
 		return err
@@ -141,7 +141,7 @@ func renderCmd(cfg *config.Config) error {
 func renderEtc(cfg *config.Config) error {
 	err := pkg.RenderTemplate("templates/etc/cfg.yml",
 		outAtEtc(cfg.OutDir(), cfg.AppName+".yaml"),
-		fs,
+		templates,
 		cfg)
 
 	return err
@@ -170,7 +170,7 @@ func renderInternal(cfg *config.Config) error {
 func renderInternalConfig(cfg *config.Config) error {
 	err := pkg.RenderTemplate("templates/internal/config/config.go",
 		outAtInternalConfig(cfg.OutDir(), "config.go"),
-		fs,
+		templates,
 		cfg)
 
 	return err
@@ -179,7 +179,7 @@ func renderInternalConfig(cfg *config.Config) error {
 func renderInternalRepo(cfg *config.Config) error {
 	err := pkg.RenderTemplate("templates/internal/repo/repo.go",
 		outAtInternalRepo(cfg.OutDir(), "repo.go"),
-		fs,
+		templates,
 		cfg)
 
 	return err
@@ -188,23 +188,23 @@ func renderInternalRepo(cfg *config.Config) error {
 func renderInternalSvc(cfg *config.Config) error {
 	err := pkg.RenderTemplate("templates/internal/svc/context.go",
 		outAtInternalSvc(cfg.OutDir(), "context.go"),
-		fs,
+		templates,
 		cfg)
 
 	return err
 }
 
 func renderInternalHttpGrpc(cfg *config.Config) error {
-	if cfg.ServiceTypeHttp() {
-		return renderInternalHttp(cfg)
-	} else if cfg.ServiceTypeGrpc() {
-		return renderInternalGrpc(cfg)
-	} else {
-		if err := renderInternalHttp(cfg); err != nil {
-			return fmt.Errorf("gen http: %w", err)
+	if cfg.HasHttp() {
+		err := renderInternalHttp(cfg)
+		if err != nil {
+			return fmt.Errorf("render http: %w", err)
 		}
-		if err := renderInternalGrpc(cfg); err != nil {
-			return fmt.Errorf("gen grpc: %w", err)
+	}
+	if cfg.HasGrpc() {
+		err := renderInternalGrpc(cfg)
+		if err != nil {
+			return fmt.Errorf("render grpc: %w", err)
 		}
 	}
 
@@ -214,16 +214,7 @@ func renderInternalHttpGrpc(cfg *config.Config) error {
 func renderInternalHttp(cfg *config.Config) error {
 	err := pkg.RenderTemplate("templates/internal/http/server.go",
 		outAtInternalHttp(cfg.OutDir(), "server.go"),
-		fs,
-		cfg)
-
-	return err
-}
-
-func renderInternalGrpc(cfg *config.Config) error {
-	err := pkg.RenderTemplate("templates/internal/rpc/server.go",
-		outAtInternalRpc(cfg.OutDir(), "server.go"),
-		fs,
+		templates,
 		cfg)
 
 	return err

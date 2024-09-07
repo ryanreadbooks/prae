@@ -1,4 +1,4 @@
-{{- if .ServiceTypeHasHttp }}
+{{- if .HasHttp }}
 http:
   mode: dev
   log:
@@ -8,7 +8,7 @@ http:
   port: 8080
 {{ end }}
 
-{{ if .ServiceTypeHasGrpc }}
+{{ if .HasGrpc }}
 grpc:
   mode: dev
   log:
